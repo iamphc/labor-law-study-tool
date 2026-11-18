@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>劳动法学习工具</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/ui.js" defer></script>
+</head>
+<body>
+  <header><div class="shell brand"><span>劳动法学习工具</span><button type="button" id="configure" class="secondary">配置 DeepSeek</button><span id="connection">正在连接服务</span></div></header>
+  <main class="shell">
+    <section id="case-picker" class="panel picker"><h1>案件记录</h1><button id="new-case" type="button" disabled>开始新案件</button><div id="case-list" aria-live="polite">正在读取历史记录…</div></section>
+    <div id="workspace" hidden><button type="button" id="switch-case" class="secondary">返回案件记录</button>
+    <section class="intro">
+      <h1>你的劳动争议，<br>从梳理案情开始。</h1>
+      <p>匹配官方法条和相似案例，逐步整理证据、可能收益和风险。</p>
+    </section>
+    <div class="layout">
+      <section class="panel entry" aria-labelledby="entry-title">
+        <h2 id="entry-title">描述你的情况</h2>
+        <p>请写明争议类型、入职时间、事情经过和工作地。</p>
+<label for="goal">当前诉求</label><input id="goal" placeholder="例如：追回欠薪，判断是否签署协议"><label for="facts">案情与补充信息</label>
+        <textarea id="facts" maxlength="12000" rows="9" placeholder="例如：我在杭州工作两年，公司上周口头通知我不用来上班了。我还没有签解除协议。"></textarea>
+        <label for="material">相关材料</label><input type="file" id="material" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"><div id="materials"></div><label for="excerpt">核对后的材料摘录</label><textarea id="excerpt" rows="3" placeholder="例如：合同第 3 页、截图 2、录音 03:15 处的原话"></textarea><details><summary>提交记录与对应建议</summary><div id="history"></div></details><button id="cloud" type="button" disabled>提交案情与材料并分析</button><p id="status" role="status"></p>
+        <details id="progress" hidden><summary>处理记录</summary><ol id="events" role="log"></ol></details><div id="follow"></div>
+      </section>
+      <section class="panel results" aria-labelledby="result-title">
+        <div class="results-head"><h2 id="result-title">案情分析与资料</h2><button id="toggle-report" type="button" class="secondary" aria-controls="result" hidden>收起分析</button><button id="export" class="secondary" type="button" hidden>导出清单</button></div>
+        <details><summary>在线查询范围</summary><p>每次读取深圳市人社局公开裁决书目录前两页最多 40 篇及指定全国性法律、司法解释官方网页，按案情关键词筛选原文片段。资料效力和案件结果请核对官方全文。</p></details><div id="result"><p class="empty">输入案情后即可在线检索。</p></div>
+      </section>
+    </div>
+    <footer id="foot"></footer>
+    </div>
+  </main>
+  <dialog id="settings"><form id="key-form"><h2>配置 DeepSeek</h2><label for="api-key">DeepSeek API Key</label><input id="api-key" type="password" required maxlength="512" autocomplete="off"><p>也可编辑程序目录中的 deepseek.local.json，填写 api_key 后刷新页面。文件中的密钥优先；在这里填写的密钥仅在当前服务运行期间有效。</p><p id="config-note" role="status"></p><div class="actions"><button type="button" id="close-settings" class="secondary">取消</button><button>保存密钥</button></div></form></dialog>
+  <dialog id="review">
+    <form method="dialog">
+      <h2>确认发送给 DeepSeek</h2>
+      <p>本次会提交下方文字、所选材料和案件历史。图片和视频抽帧由 DeepSeek Harness 分析，音轨发送到 DeepSeek 转写。请用代称替换姓名、单位名称等可识别信息，删除号码、详细地址和其他隐私。</p>
+      <label for="outgoing">将发送的案情</label>
+      <textarea id="outgoing" maxlength="12000" rows="9" required></textarea>
+      <div class="actions"><button value="cancel" formnovalidate class="secondary">取消</button><button value="send">确认发送</button></div>
+    </form>
+  </dialog>
+</body>
+</html>
