@@ -174,7 +174,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         global KEY
         if self.path == "/config":
-            if (self.headers.get("Origin") != f"http://127.0.0.1:{self.server.server_port}"
+            if (self.headers.get("Origin") != f"http://{self.server.server_address[0]}:{self.server.server_port}"
                     or self.headers.get_content_type() != "application/json"):
                 self.send_error(403)
                 return
@@ -192,7 +192,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json({"configured": True})
             return
         if self.path == "/extract":
-            if self.headers.get("Origin") != f"http://127.0.0.1:{self.server.server_port}":
+            if self.headers.get("Origin") != f"http://{self.server.server_address[0]}:{self.server.server_port}":
                 self.send_error(403)
                 return
             try:
@@ -210,7 +210,7 @@ class Handler(BaseHTTPRequestHandler):
         if self.path not in ("/analyze", "/search"):
             self.send_error(404)
             return
-        if (self.headers.get("Origin") != f"http://127.0.0.1:{self.server.server_port}"
+        if (self.headers.get("Origin") != f"http://{self.server.server_address[0]}:{self.server.server_port}"
                 or self.headers.get_content_type() != "application/json"):
             self.send_json({"error": "请从本地页面发起分析"}, 403)
             return
@@ -261,8 +261,10 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=8765)
-    with ThreadingHTTPServer(("127.0.0.1", parser.parse_args().port), Handler) as server:
-        print(f"打开 http://127.0.0.1:{server.server_port}", flush=True)
+    parser.add_argument("--host", default="127.0.0.1")
+    args = parser.parse_args()
+    with ThreadingHTTPServer((args.host, args.port), Handler) as server:
+        print(f"打开 http://{server.server_address[0]}:{server.server_port}", flush=True)
         try:
             server.serve_forever()
         except KeyboardInterrupt:

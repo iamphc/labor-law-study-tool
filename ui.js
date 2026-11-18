@@ -312,6 +312,11 @@ function readEntries(){
     req.onerror=()=>reject(req.error);
   });
 }
+function newCaseId() {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  return Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("");
+}
+
 function openCase(path,caseId){
   activeCase=caseId;
   rounds.splice(0,rounds.length,...path);
@@ -348,7 +353,7 @@ async function listCases(){
       path.slice(0,-1).forEach((e,i)=>{
         const row=add(details,"p");
         const button=add(row,"button",(e.submittedAt?new Date(e.submittedAt).toLocaleString("zh-CN")+" · ":"")+e.text.slice(0,70),"secondary");
-        button.onclick=()=>openCase(path.slice(0,i+1),crypto.randomUUID());
+        button.onclick=()=>openCase(path.slice(0,i+1),newCaseId());
       });
     }
   }
@@ -371,7 +376,7 @@ async function restore(){
   }
   await listCases();
   byId("new-case").disabled=false;
-  byId("new-case").onclick=()=>openCase([],crypto.randomUUID());
+  byId("new-case").onclick=()=>openCase([],newCaseId());
   byId("switch-case").onclick=()=>{
     if(draft().trim() && !window.confirm("返回案件记录会放弃尚未提交的输入，继续吗？"))return;
     listCases();
